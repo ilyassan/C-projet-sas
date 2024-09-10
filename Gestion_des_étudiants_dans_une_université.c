@@ -33,11 +33,18 @@ char departements[][20] = {"Science Math", "Science Physique", "Science SVT", "S
 void afficherSousMenuDajout();
 void ajouteDesEtudiants(int n);
 int obtenirDepartementIndice();
-int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale);
+int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale);
 
 void afficherSousMenuDeAffichageDesEtudiantes();
-void afficherLesEtudients(Etudiant triEtudients[], int croissante);
+void afficherLesEtudiants(Etudiant triEtudiants[], int croissante);
+void triEtAfficherLesEtudiantsParNom(int croissante);
 
+
+void printLesColonnes();
+void printUnEtudiantLigne(Etudiant etudiant);
+void printUnEtudiant(Etudiant etudiant);
+void printNexistePas();
+void printUnligne();
 
 void scanString(char string[], int size);
 
@@ -68,7 +75,7 @@ int main(){
             afficherSousMenuDajout();
             continue;
         case 2:
-            // afficherSousMenuDeAffichageDesEtudiantes();
+            afficherSousMenuDeAffichageDesEtudiantes();
             continue;
         case 3:
             // afficherSousMenuDeManipulation();
@@ -196,7 +203,7 @@ void ajouteDesEtudiants(int n){ // n Est le nombre des etudiants qui l'utilisate
 
         printf("\n");
 
-        if (insertionParOrderDeNom(nom, prenom, dateDeNaissance, noteGenerale) == -1)
+        if (ajouteUnEtudiant(nom, prenom, dateDeNaissance, noteGenerale) == -1)
         {
             puts("\nEurreur lors l'ajoutation.");
             return;
@@ -207,11 +214,11 @@ void ajouteDesEtudiants(int n){ // n Est le nombre des etudiants qui l'utilisate
     printf("\n");
     if (n == 1)
     {
-        puts("L'Etudient ajoutee avec succes.");
+        puts("L'Etudiant ajoutee avec succes.");
     }
     else
     {
-        puts("Les Etudients sont ajoutee avec succes.");
+        puts("Les Etudiants sont ajoutee avec succes.");
     }
 }
 
@@ -220,15 +227,17 @@ int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister,
     int len = sizeof(departements) / sizeof(departements[0]);
     int choix;
 
+    // Afficher les departements
     for (int i = 0; i < len; i++)
     {
         printf("\t%d. %s\n", i + 1, departements[i]);
     }
     
-    printf("\n\tChoisir un departement: ");
+    printf("\n\tChoisi un departement: ");
     scanf("%d", &choix);
     while (getchar() != '\n'); // Nettoyer le buffer
 
+    // Validatiton de choix
     if (choix < 1 || choix > len)
     {
         return -1;
@@ -238,34 +247,22 @@ int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister,
     return choix - 1; // Pour obtenu l'indice
 }
 
-int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale) { // Retourner 1 si l'ajout est succes, si non -1
+int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale) { // Retourner 1 si l'ajout est succes, si non -1
     
-    int indice = nombreDesEtudiants;
-
-    for (int i = 0; i < nombreDesEtudiants; i++) {
-        if (strcmp(nom, etudiants[i].nom) < 0) {
-            indice = i;
-            break;
-        }
-    }
-
-    for (int i = nombreDesEtudiants; i > indice; i--) {
-        etudiants[i] = etudiants[i - 1];
-    }
-
     Etudiant etudiant;
 
-    etudiant.id = nombreDesEtudiants + 1;
+    int indice = nombreDesEtudiants;
+
+    etudiant.id =  indice + 1;
     strcpy(etudiant.nom, nom);
     strcpy(etudiant.prenom, prenom);
     etudiant.noteGenerale = noteGenerale;
     etudiant.dateDeNaissance = dateDeNaissance;
 
     int departement = obtenirDepartementIndice();
-    if (departement == -1)
-    {
-        return -1;
-    }
+    if (departement == -1) return -1;
+
+    etudiant.departement = departement;
     
     etudiants[indice] = etudiant;
 
@@ -293,10 +290,10 @@ void afficherSousMenuDeAffichageDesEtudiantes(){
 
         switch (choix) {
             case 1:
-                afficherLesEtudients(etudiants, 1); // croissante
+                triEtAfficherLesEtudiantsParNom(1); // croissante
                 break;
             case 2:
-                afficherLesEtudients(etudiants, 0); // decroissante
+                triEtAfficherLesEtudiantsParNom(0); // decroissante
                 break;
             case 3:
                 // triEtAfficherLesTachesParDeadline(1); // croissante
@@ -325,12 +322,12 @@ void afficherSousMenuDeAffichageDesEtudiantes(){
     }
 }
 
-void afficherLesEtudients(Etudiant triEtudients[], int croissante){
-    puts("Les Taches: \n");
+void afficherLesEtudiants(Etudiant triEtudiants[], int croissante){
+    puts("Les Etudiants: \n");
 
     // Afficher les colonnes
     printLesColonnes();
-    
+
     if (nombreDesEtudiants == 0)
     {
         printNexistePas();
@@ -340,8 +337,61 @@ void afficherLesEtudients(Etudiant triEtudients[], int croissante){
     for (int i = 0; i < nombreDesEtudiants; i++)
     {
         int indice = croissante ? i : nombreDesEtudiants - 1 - i;
-        printUnEtudientLigne(etudiants[indice]);
+        printUnEtudiantLigne(triEtudiants[indice]);
     }
+}
+
+void triEtAfficherLesEtudiantsParNom(int croissante){
+    Etudiant cpy[100];
+    memcpy(cpy, etudiants, nombreDesEtudiants * sizeof(Etudiant));
+
+    // Tri á bulles
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        for (int j = 0; j < nombreDesEtudiants - 1 - i; j++)
+        {
+            if (strcmp(cpy[j].nom, cpy[j + 1].nom) > 0)
+            {
+                Etudiant temp = cpy[j];
+                cpy[j] = cpy[j + 1];
+                cpy[j + 1] = temp;
+            }
+        } 
+    }
+
+    afficherLesEtudiants(cpy, croissante);
+}
+
+
+void printLesColonnes(){
+    printUnligne();
+    printf("\t| %-3s | %-20s | %-20s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Departement", "Date De Naissance");
+    printUnligne();
+}
+void printUnEtudiantLigne(Etudiant etudiant){
+    printf("\t| %-3d | %-20s | %-20s | %-20s |     %d/%02d/%4d     |\n",
+        etudiant.id, etudiant.nom, etudiant.prenom, departements[etudiant.departement],
+        etudiant.dateDeNaissance.jour, etudiant.dateDeNaissance.mois, etudiant.dateDeNaissance.annee 
+    );
+    printUnligne();
+}  
+void printUnEtudiant(Etudiant etudiant){
+    printf("\tLe ID: %d\n", etudiant.id);
+    printf("\tLe Nom: %s\n", etudiant.nom);
+    printf("\tLe Prenom: %s\n", etudiant.prenom);
+    printf("\tLa Departement: %s\n", departements[etudiant.departement]);
+
+    Date date = etudiant.dateDeNaissance;
+    printf("\tLa Date de naissance: %02d/%02d/%4d\n", date.jour, date.mois, date.annee);
+}
+void printNexistePas(){
+    printf("\t|                          ");
+    printf("%-40s", "N'existe pas des etudiants pour afficher.");
+    printf("                           |\n");
+    printUnligne();
+}
+void printUnligne(){
+    printf("\t+-----+----------------------+----------------------+----------------------+-------------------+\n");
 }
 
 
