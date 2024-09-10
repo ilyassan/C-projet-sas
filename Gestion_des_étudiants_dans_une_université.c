@@ -33,6 +33,9 @@ char departements[][20] = {"Science Math", "Science Physique", "Science SVT", "S
 void afficherSousMenuDajoutation();
 void ajouteDesEtudiants(int n);
 int obtenirDepartementIndice();
+int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale);
+
+
 
 void scanString(char string[], int size);
 
@@ -46,7 +49,7 @@ int main(){
     {
         puts("\n#### Gestion des etudiants d'universite ####");
         puts("\n\t1. Ajouter Des Etudiants");
-        puts("\t2. Afficher Tous Les Taches");
+        puts("\t2. Afficher Les Etudiants");
         puts("\t3. Manipulation D'un Tache");
         puts("\t4. Rechercher Un Tache");
         puts("\t5. Statistiques");
@@ -63,7 +66,7 @@ int main(){
             afficherSousMenuDajoutation();
             continue;
         case 2:
-            // afficherSousMenuDeAffichageDesTaches();
+            // afficherSousMenuDeAffichageDesEtudiantes();
             continue;
         case 3:
             // afficherSousMenuDeManipulation();
@@ -136,7 +139,7 @@ void afficherSousMenuDajoutation(){
     }
 }
 
-void ajouteDesEtudiants(int n){
+void ajouteDesEtudiants(int n){ // n Est le nombre des etudiants qui l'utilisateur va entrer
     char nom[MAX_NOM];
     char prenom[MAX_PRENOM];
     int departement;
@@ -191,26 +194,11 @@ void ajouteDesEtudiants(int n){
 
         printf("\n");
 
-        Etudiant etudiant;
-
-        int indice = nombreDesEtudiants;
-
-        etudiant.id = indice + 1;
-        strcpy(etudiant.nom, nom);
-        strcpy(etudiant.prenom, prenom);
-        etudiant.noteGenerale = noteGenerale;
-        etudiant.dateDeNaissance = dateDeNaissance;
-
-        departement = obtenirDepartementIndice();
-        if (departement == -1)
+        if (insertionParOrderDeNom(nom, prenom, dateDeNaissance, noteGenerale) == -1)
         {
-            puts("\nChoix invalid.");
+            puts("\nEurreur lors l'ajoutation.");
             return;
-        }
-        
-        etudiants[indice] = etudiant;
-
-        nombreDesEtudiants++;
+        }  
     }
     
 
@@ -248,18 +236,41 @@ int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister,
     return choix - 1; // Pour obtenu l'indice
 }
 
+int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale) { // Retourner 1 si l'ajoutation est succes, si non -1
+    
+    int indice = nombreDesEtudiants;
 
+    for (int i = 0; i < nombreDesEtudiants; i++) {
+        if (strcmp(nom, etudiants[i].nom) < 0) {
+            indice = i;
+            break;
+        }
+    }
 
+    for (int i = nombreDesEtudiants; i > indice; i--) {
+        etudiants[i] = etudiants[i - 1];
+    }
 
+    Etudiant etudiant;
 
+    etudiant.id = nombreDesEtudiants + 1;
+    strcpy(etudiant.nom, nom);
+    strcpy(etudiant.prenom, prenom);
+    etudiant.noteGenerale = noteGenerale;
+    etudiant.dateDeNaissance = dateDeNaissance;
 
+    int departement = obtenirDepartementIndice();
+    if (departement == -1)
+    {
+        return -1;
+    }
+    
+    etudiants[indice] = etudiant;
 
+    nombreDesEtudiants++;
 
-
-
-
-
-
+    return 1;
+}
 
 
 
