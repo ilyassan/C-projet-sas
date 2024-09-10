@@ -26,6 +26,7 @@ typedef struct {
 // Définir les global variables
 Etudiant etudiants[100];
 int nombreDesEtudiants = 0;
+int id = 1;
 
 char departements[][20] = {"Science Math", "Science Physique", "Science SVT", "Science Economique", "Science Informatique"};
 
@@ -36,10 +37,10 @@ int obtenirDepartementIndice();
 int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale);
 
 void afficherSousMenuDeAffichageDesEtudiantes();
-void afficherLesEtudiants(Etudiant triEtudiants[], int croissante);
+void afficherLesEtudiants(Etudiant triEtudiants[], int croissante, int len);
 void triEtAfficherLesEtudiantsParNom(int croissante);
 void triEtAfficherLesEtudiantsParNoteGenerale(int croissante);
-
+void triEtAfficherLesEtudiantsReussite(int croissante);
 
 void printLesColonnes();
 void printUnEtudiantLigne(Etudiant etudiant);
@@ -254,7 +255,7 @@ int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGe
 
     int indice = nombreDesEtudiants;
 
-    etudiant.id =  indice + 1;
+    etudiant.id = id++;
     strcpy(etudiant.nom, nom);
     strcpy(etudiant.prenom, prenom);
     etudiant.noteGenerale = noteGenerale;
@@ -282,8 +283,9 @@ void afficherSousMenuDeAffichageDesEtudiantes(){
         puts("\t2. Selon l'ordre de nom (decroissante)");
         puts("\t3. Selon l'ordre de note generale (croissante)");
         puts("\t4. Selon l'ordre de note generale (decroissante)");
-        puts("\t5. Afficher les etudiants reussite (MG > 10)");
-        puts("\t6. Retour au menu principal");
+        puts("\t5. Afficher les etudiants reussite (croissante)");
+        puts("\t6. Afficher les etudiants reussite (decroissante)");
+        puts("\t7. Retour au menu principal");
         
         printf("\nEntrer votre choix: ");
         scanf("%d", &choix);
@@ -303,9 +305,12 @@ void afficherSousMenuDeAffichageDesEtudiantes(){
                 triEtAfficherLesEtudiantsParNoteGenerale(0); // decroissante
                 break;
             case 5:
-                // afficherLesTachesUrgent();
+                triEtAfficherLesEtudiantsReussite(1);
                 break;
             case 6:
+                triEtAfficherLesEtudiantsReussite(0);
+                break;
+            case 7:
                 return; // Retourne au menu principal
             default:
                 puts("Choix invalid.");
@@ -323,7 +328,7 @@ void afficherSousMenuDeAffichageDesEtudiantes(){
     }
 }
 
-void afficherLesEtudiants(Etudiant triEtudiants[], int croissante){
+void afficherLesEtudiants(Etudiant triEtudiants[], int croissante, int len){
     puts("Les Etudiants: \n");
 
     // Afficher les colonnes
@@ -335,9 +340,9 @@ void afficherLesEtudiants(Etudiant triEtudiants[], int croissante){
     }
 
     // Afficher les lignes
-    for (int i = 0; i < nombreDesEtudiants; i++)
+    for (int i = 0; i < len; i++)
     {
-        int indice = croissante ? i : nombreDesEtudiants - 1 - i;
+        int indice = croissante ? i : len - 1 - i;
         printUnEtudiantLigne(triEtudiants[indice]);
     }
 }
@@ -360,7 +365,7 @@ void triEtAfficherLesEtudiantsParNom(int croissante){
         } 
     }
 
-    afficherLesEtudiants(cpy, croissante);
+    afficherLesEtudiants(cpy, croissante, nombreDesEtudiants);
 }
 
 void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){
@@ -381,9 +386,40 @@ void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){
         } 
     }
 
-    afficherLesEtudiants(cpy, croissante);
+    afficherLesEtudiants(cpy, croissante, nombreDesEtudiants);
 }
 
+void triEtAfficherLesEtudiantsReussite(int croissante){
+
+    Etudiant cpy[100];
+
+    int count = 0;
+
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        if (etudiants[i].noteGenerale >= 10)
+        {
+            cpy[count] = etudiants[i];
+            count++;
+        }
+    } 
+
+    // Tri á bulles
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        for (int j = 0; j < nombreDesEtudiants - 1 - i; j++)
+        {
+            if (cpy[j].noteGenerale > cpy[j + 1].noteGenerale)
+            {
+                Etudiant temp = cpy[j];
+                cpy[j] = cpy[j + 1];
+                cpy[j + 1] = temp;
+            }
+        } 
+    }
+
+    afficherLesEtudiants(cpy, croissante, count);
+}
 
 
 void printLesColonnes(){
