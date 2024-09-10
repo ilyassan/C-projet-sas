@@ -38,6 +38,7 @@ int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGe
 void afficherSousMenuDeAffichageDesEtudiantes();
 void afficherLesEtudiants(Etudiant triEtudiants[], int croissante);
 void triEtAfficherLesEtudiantsParNom(int croissante);
+void triEtAfficherLesEtudiantsParNoteGenerale(int croissante);
 
 
 void printLesColonnes();
@@ -296,10 +297,10 @@ void afficherSousMenuDeAffichageDesEtudiantes(){
                 triEtAfficherLesEtudiantsParNom(0); // decroissante
                 break;
             case 3:
-                // triEtAfficherLesTachesParDeadline(1); // croissante
+                triEtAfficherLesEtudiantsParNoteGenerale(1); // croissante
                 break;
             case 4:
-                // triEtAfficherLesTachesParDeadline(0); // decroissante
+                triEtAfficherLesEtudiantsParNoteGenerale(0); // decroissante
                 break;
             case 5:
                 // afficherLesTachesUrgent();
@@ -362,15 +363,37 @@ void triEtAfficherLesEtudiantsParNom(int croissante){
     afficherLesEtudiants(cpy, croissante);
 }
 
+void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){
+    Etudiant cpy[100];
+    memcpy(cpy, etudiants, nombreDesEtudiants * sizeof(Etudiant));
+
+    // Tri á bulles
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        for (int j = 0; j < nombreDesEtudiants - 1 - i; j++)
+        {
+            if (cpy[j].noteGenerale > cpy[j + 1].noteGenerale)
+            {
+                Etudiant temp = cpy[j];
+                cpy[j] = cpy[j + 1];
+                cpy[j + 1] = temp;
+            }
+        } 
+    }
+
+    afficherLesEtudiants(cpy, croissante);
+}
+
+
 
 void printLesColonnes(){
     printUnligne();
-    printf("\t| %-3s | %-20s | %-20s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Departement", "Date De Naissance");
+    printf("\t| %-3s | %-20s | %-20s | %-13s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Note Generale", "Departement", "Date De Naissance");
     printUnligne();
 }
 void printUnEtudiantLigne(Etudiant etudiant){
-    printf("\t| %-3d | %-20s | %-20s | %-20s |     %d/%02d/%4d     |\n",
-        etudiant.id, etudiant.nom, etudiant.prenom, departements[etudiant.departement],
+    printf("\t| %-3d | %-20s | %-20s | %8.2f      | %-20s |     %d/%02d/%4d     |\n",
+        etudiant.id, etudiant.nom, etudiant.prenom, etudiant.noteGenerale, departements[etudiant.departement],
         etudiant.dateDeNaissance.jour, etudiant.dateDeNaissance.mois, etudiant.dateDeNaissance.annee 
     );
     printUnligne();
@@ -379,6 +402,7 @@ void printUnEtudiant(Etudiant etudiant){
     printf("\tLe ID: %d\n", etudiant.id);
     printf("\tLe Nom: %s\n", etudiant.nom);
     printf("\tLe Prenom: %s\n", etudiant.prenom);
+    printf("\tLa Note Generale: %f\n", etudiant.noteGenerale);
     printf("\tLa Departement: %s\n", departements[etudiant.departement]);
 
     Date date = etudiant.dateDeNaissance;
@@ -391,7 +415,7 @@ void printNexistePas(){
     printUnligne();
 }
 void printUnligne(){
-    printf("\t+-----+----------------------+----------------------+----------------------+-------------------+\n");
+    printf("\t+-----+----------------------+----------------------+---------------+----------------------+-------------------+\n");
 }
 
 
