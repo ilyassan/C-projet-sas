@@ -30,11 +30,13 @@ int nombreDesEtudiants = 0;
 char departements[][20] = {"Science Math", "Science Physique", "Science SVT", "Science Economique", "Science Informatique"};
 
 // Définier les fonctions
-void afficherSousMenuDajoutation();
+void afficherSousMenuDajout();
 void ajouteDesEtudiants(int n);
 int obtenirDepartementIndice();
 int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale);
 
+void afficherSousMenuDeAffichageDesEtudiantes();
+void afficherLesEtudients(Etudiant triEtudients[], int croissante);
 
 
 void scanString(char string[], int size);
@@ -63,7 +65,7 @@ int main(){
         switch (choix)
         {
         case 1:
-            afficherSousMenuDajoutation();
+            afficherSousMenuDajout();
             continue;
         case 2:
             // afficherSousMenuDeAffichageDesEtudiantes();
@@ -101,7 +103,7 @@ int main(){
 
 
 // --------- Les Fonction D'Ajoutation ---------
-void afficherSousMenuDajoutation(){
+void afficherSousMenuDajout(){
     int choix;
 
     while (1) {
@@ -236,7 +238,7 @@ int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister,
     return choix - 1; // Pour obtenu l'indice
 }
 
-int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale) { // Retourner 1 si l'ajoutation est succes, si non -1
+int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale) { // Retourner 1 si l'ajout est succes, si non -1
     
     int indice = nombreDesEtudiants;
 
@@ -273,6 +275,74 @@ int insertionParOrderDeNom(char nom[], char prenom[], Date dateDeNaissance, int 
 }
 
 
+void afficherSousMenuDeAffichageDesEtudiantes(){
+    int choix;
+
+    while (1) {
+        
+        puts("\n\t1. Selon l'ordre de nom (croissante)");
+        puts("\t2. Selon l'ordre de nom (decroissante)");
+        puts("\t3. Selon l'ordre de note generale (croissante)");
+        puts("\t4. Selon l'ordre de note generale (decroissante)");
+        puts("\t5. Afficher les etudiants reussite (MG > 10)");
+        puts("\t6. Retour au menu principal");
+        
+        printf("\nEntrer votre choix: ");
+        scanf("%d", &choix);
+        while (getchar() != '\n');
+
+        switch (choix) {
+            case 1:
+                afficherLesEtudients(etudiants, 1); // croissante
+                break;
+            case 2:
+                afficherLesEtudients(etudiants, 0); // decroissante
+                break;
+            case 3:
+                // triEtAfficherLesTachesParDeadline(1); // croissante
+                break;
+            case 4:
+                // triEtAfficherLesTachesParDeadline(0); // decroissante
+                break;
+            case 5:
+                // afficherLesTachesUrgent();
+                break;
+            case 6:
+                return; // Retourne au menu principal
+            default:
+                puts("Choix invalid.");
+        }
+
+        // Retour au menu principal
+        choix = 0;
+        while (choix != 1) {
+            puts("\n----------------");
+            puts("1. Retour");
+            printf("Entrez votre choix: ");
+            scanf("%d", &choix);
+            while (getchar() != '\n');
+        }
+    }
+}
+
+void afficherLesEtudients(Etudiant triEtudients[], int croissante){
+    puts("Les Taches: \n");
+
+    // Afficher les colonnes
+    printLesColonnes();
+    
+    if (nombreDesEtudiants == 0)
+    {
+        printNexistePas();
+    }
+
+    // Afficher les lignes
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        int indice = croissante ? i : nombreDesEtudiants - 1 - i;
+        printUnEtudientLigne(etudiants[indice]);
+    }
+}
 
 
 
