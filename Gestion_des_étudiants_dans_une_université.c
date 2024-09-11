@@ -46,7 +46,6 @@ void triEtAfficherLesEtudiantsReussite(int croissante);
 void afficherSousMenuDeManipulation();
 void modifierUnEtudiant();
 void supprimerUnEtudiant();
-int rechercheParId(int id);
 
 void afficherSousMenuDeRecherche();
 void afficherUnEtudiant();
@@ -58,6 +57,7 @@ void afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil();
 void afficherLesTroisMeilleurEtudiants();
 void afficherLeNombreDesEtudiantsDansChaqueDepartement();
 void afficherLesEtudiantsReussiDansChaqueDepratement();
+void afficherLeMoyenneGeneraleDeChaqueDepratement();
 
 
 void printLesColonnes();
@@ -66,6 +66,7 @@ void printUnEtudiant(Etudiant etudiant);
 void printNexistePas();
 void printUnligne();
 
+int rechercheParId(int id);
 void scanString(char string[], int size);
 
 // --------- Le Main Fonction ---------
@@ -683,7 +684,8 @@ void afficherSousMenuDesStatistiques(){
         puts("\t3. Le trois meilleure etudiants");
         puts("\t4. Le nombre des etudiants dans chaque departement");
         puts("\t5. Le nombre des etudiants reussir dans chaque departement");
-        puts("\t6. Retour au menu principal");
+        puts("\t6. Le Moyenne generale de chaque departement");
+        puts("\t7. Retour au menu principal");
         
         printf("\nEntrer votre choix: ");
         scanf("%d", &choix);
@@ -706,6 +708,9 @@ void afficherSousMenuDesStatistiques(){
                 afficherLesEtudiantsReussiDansChaqueDepratement();
                 break;
             case 6:
+                afficherLeMoyenneGeneraleDeChaqueDepratement();
+                break;
+            case 7:
                 return; // Retourne au menu principal
             default:
                 puts("Choix invalide.");
@@ -813,7 +818,7 @@ void afficherLesEtudiantsReussiDansChaqueDepratement(){
         int count = 0;
         for (int j = 0; j < nombreDesEtudiants; j++)
         {
-            if (etudiants[j].departement == i && etudiants[i].noteGenerale >= 10)
+            if (etudiants[j].departement == i && etudiants[j].noteGenerale >= 10)
             {
                 count++;
             }
@@ -823,6 +828,32 @@ void afficherLesEtudiantsReussiDansChaqueDepratement(){
     }
 }
 
+void afficherLeMoyenneGeneraleDeChaqueDepratement(){
+    puts("\nLe moyenne generale de chaque departement:\n");
+
+    int count = 0;
+    float sommeDepartement = 0;
+    float somme = 0;
+
+    for (int i = 0; i < nombreDesDepartements; i++)
+    {
+        count = 0;
+        sommeDepartement = 0;
+        for (int j = 0; j < nombreDesEtudiants; j++)
+        {
+            if (etudiants[j].departement == i)
+            {
+                sommeDepartement += etudiants[j].noteGenerale;
+                count++;
+            }
+        }
+        somme += sommeDepartement;
+
+        printf("\t%d. %-15s => %.2f\n", i + 1, departements[i], count != 0 ? sommeDepartement / count : 0);
+    }
+
+    printf("\t%d. %-15s => %.2f\n", nombreDesDepartements + 1, "Universite" ,nombreDesEtudiants != 0 ? somme / nombreDesEtudiants: 0);
+}
 
 
 
