@@ -4,7 +4,6 @@
 
 // Des idee
 // choisir le champ modifier lors de modification
-// Capitalaize all the names, (Ilyass Anida)
 // validation of inputs
 
 
@@ -75,6 +74,7 @@ void printNexistePas();
 void printUnligne();
 
 int rechercheParId(int id);
+void obtenirLaMention(char mention[], int note);
 void scanString(char string[], int size);
 void capitaliseUnString(char string[], int size);
 
@@ -899,38 +899,64 @@ void afficherLeMoyenneGeneraleDeChaqueDepratement(){
 
 void printLesColonnes(){
     printUnligne();
-    printf("\t| %-3s | %-20s | %-20s | %-13s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Note Generale", "Departement", "Date De Naissance");
+    printf("\t| %-3s | %-20s | %-20s | %-13s | %-12s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Note Generale", "Mention", "Departement", "Date De Naissance");
     printUnligne();
 }
 void printUnEtudiantLigne(Etudiant etudiant){
-    printf("\t| %-3d | %-20s | %-20s | %8.2f      | %-20s |     %d/%02d/%4d     |\n",
-        etudiant.id, etudiant.nom, etudiant.prenom, etudiant.noteGenerale, departements[etudiant.departement],
+    char mention[10];
+
+    obtenirLaMention(mention, etudiant.noteGenerale);
+    
+    printf("\t| %-3d | %-20s | %-20s | %8.2f      | %-12s | %-20s |     %d/%02d/%4d     |\n",
+        etudiant.id, etudiant.nom, etudiant.prenom, etudiant.noteGenerale, mention, departements[etudiant.departement],
         etudiant.dateDeNaissance.jour, etudiant.dateDeNaissance.mois, etudiant.dateDeNaissance.annee 
     );
     printUnligne();
 }  
 void printUnEtudiant(Etudiant etudiant){
+    char mention[10];
+
+    obtenirLaMention(mention, etudiant.noteGenerale);
+
     printf("\n\t-------------------------\n");
     printf("\tLe ID: %d\n", etudiant.id);
     printf("\tLe Nom: %s\n", etudiant.nom);
     printf("\tLe Prenom: %s\n", etudiant.prenom);
     printf("\tLa Note Generale: %.2f\n", etudiant.noteGenerale);
+    printf("\tLa Mention: %s\n", mention);
     printf("\tLa Departement: %s\n", departements[etudiant.departement]);
 
     Date date = etudiant.dateDeNaissance;
     printf("\tLa Date de naissance: %02d/%02d/%4d\n", date.jour, date.mois, date.annee);
 }
 void printNexistePas(){
-    printf("\t|                                  ");
+    printf("\t|%-42s", " ");
     printf("%-40s", "N'existe pas des etudiants pour afficher.");
-    printf("                                   |\n");
+    printf("%-42s|\n", " ");
     printUnligne();
 }
 void printUnligne(){
-    printf("\t+-----+----------------------+----------------------+---------------+----------------------+-------------------+\n");
+    printf("\t+-----+----------------------+----------------------+---------------+--------------+----------------------+-------------------+\n");
 }
 
-
+void obtenirLaMention(char mention[], int note){
+    if (note < 10)
+    {
+        strcpy(mention, "Insuffisant");
+    }
+    else if (note < 14)
+    {
+        strcpy(mention, "Passage");
+    }
+    else if (note < 17)
+    {
+        strcpy(mention, "Bien");
+    }
+    else
+    {
+        strcpy(mention, "Tres Bien");
+    }
+}
 
 
 int rechercheParId(int id){ // Retourner l'indice d'etudiant si trouver, si non retourner -1
