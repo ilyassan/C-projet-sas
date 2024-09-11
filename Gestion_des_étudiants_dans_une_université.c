@@ -56,6 +56,8 @@ void afficherLesEtudiantsDansUnDepratement();
 void afficherSousMenuDesStatistiques();
 void afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil();
 void afficherLesTroisMeilleurEtudiants();
+void afficherLeNombreDesEtudiantsDansChaqueDepartement();
+void afficherLesEtudiantsReussiDansChaqueDepratement();
 
 
 void printLesColonnes();
@@ -420,9 +422,9 @@ void triEtAfficherLesEtudiantsReussite(int croissante){
     } 
 
     // Tri á bulles
-    for (int i = 0; i < nombreDesEtudiants; i++)
+    for (int i = 0; i < count; i++)
     {
-        for (int j = 0; j < nombreDesEtudiants - 1 - i; j++)
+        for (int j = 0; j < count - 1 - i; j++)
         {
             if (cpy[j].noteGenerale > cpy[j + 1].noteGenerale)
             {
@@ -677,9 +679,9 @@ void afficherSousMenuDesStatistiques(){
     while (1) {
         
         puts("\n\t1. Le nombre total des etudiants inscrits");
-        puts("\t2. Le nombre des etudiants dans chaque departement");
-        puts("\t3. Le nombre des etudiants ayant une note superieure a une seuil");
-        puts("\t4. Le trois meilleure etudiants");
+        puts("\t2. Le nombre des etudiants ayant une note superieure a une seuil");
+        puts("\t3. Le trois meilleure etudiants");
+        puts("\t4. Le nombre des etudiants dans chaque departement");
         puts("\t5. Le nombre des etudiants reussir dans chaque departement");
         puts("\t6. Retour au menu principal");
         
@@ -692,28 +694,16 @@ void afficherSousMenuDesStatistiques(){
                 printf("\nLe nombre total des etudiants inscrits: %d\n", nombreDesEtudiants);
                 break;
             case 2:
-                puts("\nLe nombre des etudiants dans chaque departement:\n");
-
-                for (int i = 0; i < nombreDesDepartements; i++)
-                {
-                    int count = 0;
-                    for (int j = 0; j < nombreDesEtudiants; j++)
-                    {
-                        if (etudiants[j].departement == i)
-                        {
-                            count++;
-                        }
-                    }
-
-                    printf("\t%d. %-15s => %d\n", i + 1, departements[i], count);
-                }
-                
-                break;
-            case 3:
                 afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil();
                 break;
-            case 4:
+            case 3:
                 afficherLesTroisMeilleurEtudiants();
+                break;
+            case 4:
+                afficherLeNombreDesEtudiantsDansChaqueDepartement();
+                break;
+            case 5:
+                afficherLesEtudiantsReussiDansChaqueDepratement();
                 break;
             case 6:
                 return; // Retourne au menu principal
@@ -796,6 +786,44 @@ void afficherLesTroisMeilleurEtudiants(){
     printUnEtudiantLigne(etudiant2);
     printUnEtudiantLigne(etudiant3);
 }
+
+void afficherLeNombreDesEtudiantsDansChaqueDepartement(){
+    puts("\nLe nombre des etudiants dans chaque departement:\n");
+
+    for (int i = 0; i < nombreDesDepartements; i++)
+    {
+        int count = 0;
+        for (int j = 0; j < nombreDesEtudiants; j++)
+        {
+            if (etudiants[j].departement == i)
+            {
+                count++;
+            }
+        }
+
+        printf("\t%d. %-15s => %d\n", i + 1, departements[i], count);
+    }
+}
+
+void afficherLesEtudiantsReussiDansChaqueDepratement(){
+    puts("\nLe nombre des etudiants reussi dans chaque departement:\n");
+
+    for (int i = 0; i < nombreDesDepartements; i++)
+    {
+        int count = 0;
+        for (int j = 0; j < nombreDesEtudiants; j++)
+        {
+            if (etudiants[j].departement == i && etudiants[i].noteGenerale >= 10)
+            {
+                count++;
+            }
+        }
+
+        printf("\t%d. %-15s => %d\n", i + 1, departements[i], count);
+    }
+}
+
+
 
 
 void printLesColonnes(){
