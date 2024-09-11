@@ -3,8 +3,9 @@
 #include <ctype.h>
 
 // Des idee
-// choisir le champ modifier lors de modification
 // validation of inputs
+// separer la fonction d'ajoute
+// replacer scanf par une autre fonction
 
 
 // Définir les constants
@@ -81,10 +82,8 @@ void capitaliseUnString(char string[], int size);
 // --------- Le Main Fonction ---------
 int main(){
 
-    int travail = 1;
-
     // La menu principale
-    while (travail)
+    while (1)
     {
         puts("\n#### Gestion des etudiants d'universite ####");
         puts("\n\t1. Ajouter Des Etudiants");
@@ -117,8 +116,7 @@ int main(){
             afficherSousMenuDesStatistiques();
             continue;
         case 6:
-            travail = 0;
-            break;
+            return 0;
         
         default:
             puts("Choix invalide.");
@@ -126,7 +124,7 @@ int main(){
 
         // Pour retour au menu principal
         choix = 0;
-        while (choix != 1 && travail != 0) {
+        while (choix != 1) {
             puts("\n----------------");
             puts("1. Retour");
             printf("Entrez votre choix: ");
@@ -204,6 +202,8 @@ void ajouteDesEtudiants(int n){ // n Est le nombre des etudiants qui l'utilisate
     else{
         puts("Ajouter Multiple Etudiants: ");
     }
+
+    printf("\n");
     
     for (int i = 0; i < n; i++)
     {
@@ -507,46 +507,73 @@ void modifierUnEtudiant(){
         puts("\nCette etudiant n'existe pas.");
         return;
     }
+
+    puts("\n\t1. Modifier le nom");
+    puts("\t2. Modifier le prenom");
+    puts("\t3. Modifier la departement");
+    puts("\t4. Modifier la note generale");
+    puts("\t5. Modifier la date de naissance");
     
+    int champ;
+    printf("\n\tChoisi le champ tu veux modifier: ");
+    scanf("%d", &champ);
+    while (getchar() != '\n');  // Nettoyer le buffer
+
     char nom[MAX_NOM];
     char prenom[MAX_PRENOM];
     int departement;
     float noteGenerale;
     Date dateDeNaissance;
-    
-    printf("\tEntrer le nouvelle nom: ");
-    scanString(nom, sizeof(nom));
-    
-    printf("\tEntrer le nouvelle prenom: ");
-    scanString(prenom, sizeof(prenom));
-
-    printf("\tEntrer l'annee de naissance: ");
-    scanf("%d", &dateDeNaissance.annee);
-
-    printf("\tEntrer le mois de naissance: ");
-    scanf("%d", &dateDeNaissance.mois);
-
-    printf("\tEntrer le jour de naissance: ");
-    scanf("%d", &dateDeNaissance.jour);
-
-    printf("\tEntrer la nouvelle note generale: ");
-    scanf("%f", &noteGenerale);
-    while (getchar() != '\n');  // Nettoyer le buffer
 
     printf("\n");
-    departement = obtenirDepartementIndice();
-    if (departement == -1){
+    switch (champ)
+    {
+    case 1:
+        printf("\tEntrer le nouvelle nom: ");
+        scanString(nom, sizeof(nom));
+        capitaliseUnString(nom, MAX_NOM);
+        strcpy(etudiants[indice].nom, nom);
+        break;
+    case 2:
+        printf("\tEntrer le nouvelle prenom: ");
+        scanString(prenom, sizeof(prenom));
+        capitaliseUnString(nom, MAX_PRENOM);
+        strcpy(etudiants[indice].prenom, prenom);
+        break;
+    case 3:
+        departement = obtenirDepartementIndice();
+        if (departement == -1){
+            puts("Choix Invalide.");
+            return;
+        }
+        etudiants[indice].departement = departement;
+        break;
+    case 4:
+        printf("\tEntrer la nouvelle note generale: ");
+        scanf("%f", &noteGenerale);
+        while (getchar() != '\n');  // Nettoyer le buffer
+
+        etudiants[indice].noteGenerale = noteGenerale;
+        break;
+    case 5:
+        printf("\tEntrer l'annee de naissance: ");
+        scanf("%d", &dateDeNaissance.annee);
+
+        printf("\tEntrer le mois de naissance: ");
+        scanf("%d", &dateDeNaissance.mois);
+
+        printf("\tEntrer le jour de naissance: ");
+        scanf("%d", &dateDeNaissance.jour);
+        while (getchar() != '\n');  // Nettoyer le buffer
+
+        etudiants[indice].dateDeNaissance = dateDeNaissance;
+        break;
+    
+    default:
         puts("Choix Invalide.");
         return;
     }
 
-    strcpy(etudiants[indice].nom, nom);
-    strcpy(etudiants[indice].prenom, prenom);
-    etudiants[indice].noteGenerale = noteGenerale;
-    etudiants[indice].dateDeNaissance = dateDeNaissance;
-
-    etudiants[indice].departement = departement;
-    
     puts("\nLes informations de l'etudiant sont modifie avec succes.");
 }
 
