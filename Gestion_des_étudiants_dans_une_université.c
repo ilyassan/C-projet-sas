@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 
+// Des idee
+// choisir le champ modifier lors de modification
+// Capitalaize all the names, (Ilyass Anida)
+// display students with same name
+
 
 // Définir les constants
 #define MAX_NOM 50
@@ -48,7 +53,8 @@ void modifierUnEtudiant();
 void supprimerUnEtudiant();
 
 void afficherSousMenuDeRecherche();
-void afficherUnEtudiant();
+void afficherUnEtudiantParId();
+void afficherUnEtudiantParNom();
 void afficherLesEtudiantsDansUnDepratement();
 
 
@@ -81,7 +87,7 @@ int main(){
         puts("\n\t1. Ajouter Des Etudiants");
         puts("\t2. Afficher Les Etudiants");
         puts("\t3. Manipulation D'un Etudiant");
-        puts("\t4. Rechercher Un Etudiant");
+        puts("\t4. Rechercher Des Etudiants");
         puts("\t5. Statistiques");
         puts("\t6. Quitter Le Program");
 
@@ -583,9 +589,10 @@ void afficherSousMenuDeRecherche(){
 
     while (1) {
         
-        puts("\n\t1. Rechercher avec ID");
-        puts("\t2. Recherche dans un departement");
-        puts("\t3. Retour au menu principal");
+        puts("\n\t1. Rechercher par ID");
+        puts("\t2. Recherche par Nom");
+        puts("\t3. Recherche par departement");
+        puts("\t4. Retour au menu principal");
         
         printf("\nEntrer votre choix: ");
         scanf("%d", &choix);
@@ -593,12 +600,15 @@ void afficherSousMenuDeRecherche(){
 
         switch (choix) {
             case 1:
-                afficherUnEtudiant();
+                afficherUnEtudiantParId();
                 break;
             case 2:
-                afficherLesEtudiantsDansUnDepratement();
+                afficherUnEtudiantParNom();
                 break;
             case 3:
+                afficherLesEtudiantsDansUnDepratement();
+                break;
+            case 4:
                 return; // Retourne au menu principal
             default:
                 puts("Choix invalide.");
@@ -616,12 +626,10 @@ void afficherSousMenuDeRecherche(){
     }
 }
 
-void afficherUnEtudiant(){
+void afficherUnEtudiantParId(){
     int id;
 
-    puts("Afficher Un Etudiant: \n");
-
-    printf("\tEntrer le ID d'etudiant: ");
+    printf("\n\tEntrer le ID d'etudiant: ");
     scanf("%d", &id);
     while (getchar() != '\n');  // Nettoyer le buffer
 
@@ -634,6 +642,32 @@ void afficherUnEtudiant(){
     }
 
     printUnEtudiant(etudiants[indice]);
+}
+
+void afficherUnEtudiantParNom(){
+    char nom[MAX_NOM];
+
+    printf("\n\tEntrer le nom: ");
+    scanString(nom, sizeof(nom));
+
+    int trouver = 0;
+
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        if (strcmp(nom, etudiants[i].nom) == 0)
+        {
+            printUnEtudiant(etudiants[i]);
+            trouver = 1;
+        }
+        
+    }
+    
+
+    if (trouver == 0)
+    {
+        puts("\nCette etudiant n'existe pas.");
+        return;
+    }
 }
 
 void afficherLesEtudiantsDansUnDepratement(){
@@ -870,7 +904,7 @@ void printUnEtudiantLigne(Etudiant etudiant){
     printUnligne();
 }  
 void printUnEtudiant(Etudiant etudiant){
-    printf("\n");
+    printf("\n\t-------------------------\n");
     printf("\tLe ID: %d\n", etudiant.id);
     printf("\tLe Nom: %s\n", etudiant.nom);
     printf("\tLe Prenom: %s\n", etudiant.prenom);
