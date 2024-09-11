@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 // Des idee
 // choisir le champ modifier lors de modification
 // Capitalaize all the names, (Ilyass Anida)
-// display students with same name
+// validation of inputs
 
 
 // Définir les constants
@@ -74,6 +75,7 @@ void printUnligne();
 
 int rechercheParId(int id);
 void scanString(char string[], int size);
+void capitaliseUnString(char string[], int size);
 
 // --------- Le Main Fonction ---------
 int main(){
@@ -280,6 +282,9 @@ int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGe
 
     int departement = obtenirDepartementIndice();
     if (departement == -1) return -1;
+
+    capitaliseUnString(nom, MAX_NOM);
+    capitaliseUnString(prenom, MAX_PRENOM);
 
     etudiant.id = id++;
     strcpy(etudiant.nom, nom);
@@ -956,3 +961,11 @@ void scanString(char string[], int size){
     }
 }
 
+void capitaliseUnString(char string[], int size){ // capitaliser un string, "iLyasS" => "Ilyass"
+    string[0] = toupper(string[0]);
+
+    for (int i = 1; i < size; i++)
+    {
+        string[i] = tolower(string[i]);
+    }
+}
