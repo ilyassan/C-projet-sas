@@ -42,7 +42,7 @@ int nombreDesDepartements = sizeof(departements) / sizeof(departements[0]);
 void afficherSousMenuDajout();
 void ajouteDesEtudiants(int n);
 int obtenirDepartementIndice();
-int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale);
+int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, float noteGenerale);
 
 void afficherSousMenuDeAffichageDesEtudiantes();
 void afficherLesEtudiants(Etudiant triEtudiants[], int croissante, int len);
@@ -79,8 +79,12 @@ void obtenirLaMention(char mention[], int note);
 void scanString(char string[], int size);
 void capitaliseUnString(char string[], int size);
 
+void seed(); // Ajouter pseudo informations
+
 // --------- Le Main Fonction ---------
 int main(){
+
+    seed();
 
     // La menu principale
     while (1)
@@ -139,6 +143,7 @@ int main(){
 
 // --------- Les Fonction D'Ajoute ---------
 void afficherSousMenuDajout(){
+    int n;
     int choix;
 
     while (1) {
@@ -153,10 +158,14 @@ void afficherSousMenuDajout(){
 
         switch (choix) {
             case 1:
-                ajouteDesEtudiants(1);
+                ajouteDesEtudiants(1); // Ajoute 1 etudiant
                 break;
             case 2:
-                ajouteDesEtudiants(0);
+                printf("Combien des etudiants vous voulez entrer: ");
+                scanf("%d", &n);
+                while (getchar() != '\n'); // Nettoyer le buffer
+
+                ajouteDesEtudiants(n); // Ajoute n des etudiant
                 break;
             case 3:
                 return; // Retourne au menu principal
@@ -182,13 +191,6 @@ void ajouteDesEtudiants(int n){ // n Est le nombre des etudiants qui l'utilisate
     int departement;
     float noteGenerale;
     Date dateDeNaissance;
-
-    if (n == 0)
-    {
-        printf("Combien des etudiants vous voulez entrer: ");
-        scanf("%d", &n);
-        while (getchar() != '\n'); // Nettoyer le buffer
-    }
 
     if (n < 1)
     {
@@ -275,7 +277,7 @@ int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister,
     return choix - 1; // Pour obtenu l'indice
 }
 
-int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGenerale) { // Retourner 1 si l'ajout est succes, si non -1
+int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, float noteGenerale) { // Retourner 1 si l'ajout est succes, si non -1
     
     Etudiant etudiant;
 
@@ -923,7 +925,6 @@ void afficherLeMoyenneGeneraleDeChaqueDepratement(){
 }
 
 
-
 void printLesColonnes(){
     printUnligne();
     printf("\t| %-3s | %-20s | %-20s | %-13s | %-12s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Note Generale", "Mention", "Departement", "Date De Naissance");
@@ -934,7 +935,7 @@ void printUnEtudiantLigne(Etudiant etudiant){
 
     obtenirLaMention(mention, etudiant.noteGenerale);
     
-    printf("\t| %-3d | %-20s | %-20s | %8.2f      | %-12s | %-20s |     %d/%02d/%4d     |\n",
+    printf("\t| %-3d | %-20s | %-20s | %8.2f      | %-12s | %-20s |     %02d/%02d/%4d    |\n",
         etudiant.id, etudiant.nom, etudiant.prenom, etudiant.noteGenerale, mention, departements[etudiant.departement],
         etudiant.dateDeNaissance.jour, etudiant.dateDeNaissance.mois, etudiant.dateDeNaissance.annee 
     );
@@ -985,7 +986,6 @@ void obtenirLaMention(char mention[], int note){
     }
 }
 
-
 int rechercheParId(int id){ // Retourner l'indice d'etudiant si trouver, si non retourner -1
 
     int g = 0;
@@ -1011,7 +1011,7 @@ int rechercheParId(int id){ // Retourner l'indice d'etudiant si trouver, si non 
 
 void scanString(char string[], int size){
     if (fgets(string, size, stdin) != NULL) {
-        string[strcspn(string, "\n")] = '\0';
+        string[strcspn(string, "\n")] = '\0'; // Replacer le \n avec \0
     }
 }
 
@@ -1021,5 +1021,35 @@ void capitaliseUnString(char string[], int size){ // capitaliser un string, "iLy
     for (int i = 1; i < size; i++)
     {
         string[i] = tolower(string[i]);
+    }
+}
+
+
+// Seed les information
+void seed() {
+    Etudiant etudiant;
+    Date dateDeNaissance;
+
+    // Les informations
+    const char noms[][MAX_NOM] = {"Ilyass", "Ahmed", "Oussama", "Saad", "Leila", "Nadia", "Youssef", "Mariam", "Karim"};
+    const char prenoms[][MAX_PRENOM] = {"Anida", "Chanaoui", "Amou", "Mared", "Benaissa", "Haddad", "Tariq", "Khalil", "Said"};
+    const float notes[] = {17.5, 9, 10.5, 14, 12, 15, 11, 19, 8.25};
+    const int annees[] = {2007, 2003, 2001, 2005, 2006, 2004, 2002, 2004, 2004};
+    const int mois[] = {2, 5, 9, 4, 11, 7, 8, 1, 3};
+    const int jours[] = {5, 6, 11, 2, 17, 21, 30, 12, 22};
+    const int departements[] = {3, 3, 1, 4, 0, 2, 4, 1, 2};
+
+    // Seed les infromations
+    for (int i = 0; i < 9; ++i) {
+        etudiant.id = id++;
+        strcpy(etudiant.nom, noms[i]);
+        strcpy(etudiant.prenom, prenoms[i]);
+        etudiant.noteGenerale = notes[i];
+        dateDeNaissance.annee = annees[i];
+        dateDeNaissance.mois = mois[i];
+        dateDeNaissance.jour = jours[i];
+        etudiant.dateDeNaissance = dateDeNaissance;
+        etudiant.departement = departements[i];
+        etudiants[nombreDesEtudiants++] = etudiant;
     }
 }
