@@ -42,6 +42,10 @@ void triEtAfficherLesEtudiantsParNom(int croissante);
 void triEtAfficherLesEtudiantsParNoteGenerale(int croissante);
 void triEtAfficherLesEtudiantsReussite(int croissante);
 
+void afficherSousMenuDeManipulation();
+void modifierUnEtudiant();
+int rechercheParId(int id);
+
 void printLesColonnes();
 void printUnEtudiantLigne(Etudiant etudiant);
 void printUnEtudiant(Etudiant etudiant);
@@ -80,7 +84,7 @@ int main(){
             afficherSousMenuDeAffichageDesEtudiantes();
             continue;
         case 3:
-            // afficherSousMenuDeManipulation();
+            afficherSousMenuDeManipulation();
             continue;
         case 4:
             // afficherSousMenuDeRecherche();
@@ -111,7 +115,7 @@ int main(){
 }
 
 
-// --------- Les Fonction D'Ajoutation ---------
+// --------- Les Fonction D'Ajoute ---------
 void afficherSousMenuDajout(){
     int choix;
 
@@ -235,7 +239,7 @@ int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister,
         printf("\t%d. %s\n", i + 1, departements[i]);
     }
     
-    printf("\n\tChoisi un departement: ");
+    printf("\n\tChoisi le departement: ");
     scanf("%d", &choix);
     while (getchar() != '\n'); // Nettoyer le buffer
 
@@ -255,14 +259,14 @@ int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGe
 
     int indice = nombreDesEtudiants;
 
+    int departement = obtenirDepartementIndice();
+    if (departement == -1) return -1;
+
     etudiant.id = id++;
     strcpy(etudiant.nom, nom);
     strcpy(etudiant.prenom, prenom);
     etudiant.noteGenerale = noteGenerale;
     etudiant.dateDeNaissance = dateDeNaissance;
-
-    int departement = obtenirDepartementIndice();
-    if (departement == -1) return -1;
 
     etudiant.departement = departement;
     
@@ -274,6 +278,7 @@ int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, int noteGe
 }
 
 
+// --------- Les Fonction D'affichage ---------
 void afficherSousMenuDeAffichageDesEtudiantes(){
     int choix;
 
@@ -334,7 +339,7 @@ void afficherLesEtudiants(Etudiant triEtudiants[], int croissante, int len){
     // Afficher les colonnes
     printLesColonnes();
 
-    if (nombreDesEtudiants == 0)
+    if (len == 0)
     {
         printNexistePas();
     }
@@ -422,6 +427,129 @@ void triEtAfficherLesEtudiantsReussite(int croissante){
 }
 
 
+// --------- Les Fonction De Manipulation ---------
+void afficherSousMenuDeManipulation(){
+    int choix;
+
+    while (1) {
+        
+        puts("\n\t1. Modifier Un Etudiant");
+        puts("\t2. Supprimer Un Etudiant");
+        puts("\t3. Retour au menu principal");
+        
+        printf("\nEntrer votre choix: ");
+        scanf("%d", &choix);
+        while (getchar() != '\n');
+
+        switch (choix) {
+            case 1:
+                modifierUnEtudiant();
+                break;
+            case 2:
+                // supprimerUnEtudiant();
+                break;
+            case 3:
+                return; // Retourne au menu principal
+            default:
+                puts("Choix invalid.");
+        }
+
+        // Retour au menu principal
+        choix = 0;
+        while (choix != 1) {
+            puts("\n----------------");
+            puts("1. Retour");
+            printf("Entrez votre choix: ");
+            scanf("%d", &choix);
+            while (getchar() != '\n');
+        }
+    }
+}
+
+void modifierUnEtudiant(){
+    int id;
+
+    puts("Modifier Un Etudiant: \n");
+
+    printf("\tEntrer le ID d'etudiant: ");
+    scanf("%d", &id);
+    while (getchar() != '\n');  // Nettoyer le buffer
+
+    int indice = rechercheParId(id);
+
+    if (indice == -1)
+    {
+        puts("\nCette etudiant n'existe pas.");
+        return;
+    }
+    
+    char nom[MAX_NOM];
+    char prenom[MAX_PRENOM];
+    int departement;
+    float noteGenerale;
+    Date dateDeNaissance;
+    
+    printf("\tEntrer le nouvelle nom: ");
+    scanString(nom, sizeof(nom));
+    
+    printf("\tEntrer le nouvelle prenom: ");
+    scanString(prenom, sizeof(prenom));
+
+    printf("\tEntrer l'annee de naissance: ");
+    scanf("%d", &dateDeNaissance.annee);
+
+    printf("\tEntrer le mois de naissance: ");
+    scanf("%d", &dateDeNaissance.mois);
+
+    printf("\tEntrer le jour de naissance: ");
+    scanf("%d", &dateDeNaissance.jour);
+
+    printf("\tEntrer la nouvelle note generale: ");
+    scanf("%f", &noteGenerale);
+    while (getchar() != '\n');  // Nettoyer le buffer
+
+    printf("\n");
+    departement = obtenirDepartementIndice();
+    if (departement == -1){
+        puts("Choix Invalid.");
+        return;
+    }
+
+    strcpy(etudiants[indice].nom, nom);
+    strcpy(etudiants[indice].prenom, prenom);
+    etudiants[indice].noteGenerale = noteGenerale;
+    etudiants[indice].dateDeNaissance = dateDeNaissance;
+
+    etudiants[indice].departement = departement;
+    
+    puts("\nLes informations de l'etudiant sont modifie avec succes.");
+}
+
+int rechercheParId(int id){ // Retourner l'indice d'etudiant si trouver, si non retourner -1
+
+    int g = 0;
+    int d = nombreDesEtudiants - 1;
+
+    // Recherche Binaire
+    while (g <= d) {
+        int mid = (d + g) / 2;
+
+        if (etudiants[mid].id == id) { // Si trouver
+
+            return mid; 
+        }
+        else if (id > etudiants[mid].id) {
+            g = mid + 1;
+        } else {
+            d = mid - 1;
+        }
+    }
+
+    return -1;
+}
+
+
+
 void printLesColonnes(){
     printUnligne();
     printf("\t| %-3s | %-20s | %-20s | %-13s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Note Generale", "Departement", "Date De Naissance");
@@ -445,9 +573,9 @@ void printUnEtudiant(Etudiant etudiant){
     printf("\tLa Date de naissance: %02d/%02d/%4d\n", date.jour, date.mois, date.annee);
 }
 void printNexistePas(){
-    printf("\t|                          ");
+    printf("\t|                                  ");
     printf("%-40s", "N'existe pas des etudiants pour afficher.");
-    printf("                           |\n");
+    printf("                                   |\n");
     printUnligne();
 }
 void printUnligne(){
