@@ -927,7 +927,7 @@ void printLesColonnes(){
     printUnligne();
 }
 void printUnEtudiantLigne(Etudiant etudiant){
-    char mention[10];
+    char mention[12];
 
     obtenirLaMention(mention, etudiant.noteGenerale);
     
