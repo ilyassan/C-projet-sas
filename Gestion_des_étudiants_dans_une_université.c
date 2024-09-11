@@ -749,7 +749,7 @@ void afficherSousMenuDesStatistiques(){
         puts("\t3. Le trois meilleure etudiants");
         puts("\t4. Le nombre des etudiants dans chaque departement");
         puts("\t5. Le nombre des etudiants reussir dans chaque departement");
-        puts("\t6. Le Moyenne generale de chaque departement");
+        puts("\t6. Le Moyenne generale de chaque departement et d'universite");
         puts("\t7. Retour au menu principal");
         
         printf("\nEntrer votre choix: ");
@@ -938,7 +938,7 @@ void printUnEtudiantLigne(Etudiant etudiant){
     printUnligne();
 }  
 void printUnEtudiant(Etudiant etudiant){
-    char mention[10];
+    char mention[12];
 
     obtenirLaMention(mention, etudiant.noteGenerale);
 
