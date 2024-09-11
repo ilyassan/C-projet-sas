@@ -967,11 +967,11 @@ void printUnligne(){
 void obtenirLaMention(char mention[], int note){
     if (note < 10)
     {
-        strcpy(mention, "Insuffisant");
+        strcpy(mention, "Echec");
     }
     else if (note < 14)
     {
-        strcpy(mention, "Passage");
+        strcpy(mention, "Assez Bien");
     }
     else if (note < 17)
     {
