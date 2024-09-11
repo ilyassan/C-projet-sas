@@ -2,11 +2,6 @@
 #include <string.h>
 #include <ctype.h>
 
-// Des idee
-// validation of inputs
-// separer la fonction d'ajoute
-// replacer scanf par une autre fonction
-
 
 // Définir les constants
 #define MAX_NOM 30
@@ -254,29 +249,6 @@ void ajouteDesEtudiants(int n){ // n Est le nombre des etudiants qui l'utilisate
     }
 }
 
-int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister, si non retourner -1
-    int choix;
-
-    // Afficher les departements
-    for (int i = 0; i < nombreDesDepartements; i++)
-    {
-        printf("\t%d. %s\n", i + 1, departements[i]);
-    }
-    
-    printf("\n\tChoisi le departement: ");
-    scanf("%d", &choix);
-    while (getchar() != '\n'); // Nettoyer le buffer
-
-    // Validatiton de choix
-    if (choix < 1 || choix > nombreDesDepartements)
-    {
-        return -1;
-    }
-
-    
-    return choix - 1; // Pour obtenu l'indice
-}
-
 int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, float noteGenerale) { // Retourner 1 si l'ajout est succes, si non -1
     
     Etudiant etudiant;
@@ -302,6 +274,29 @@ int ajouteUnEtudiant(char nom[], char prenom[], Date dateDeNaissance, float note
     nombreDesEtudiants++;
 
     return 1;
+}
+
+int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister, si non retourner -1
+    int choix;
+
+    // Afficher les departements
+    for (int i = 0; i < nombreDesDepartements; i++)
+    {
+        printf("\t%d. %s\n", i + 1, departements[i]);
+    }
+    
+    printf("\n\tChoisi le departement: ");
+    scanf("%d", &choix);
+    while (getchar() != '\n'); // Nettoyer le buffer
+
+    // Validatiton de choix
+    if (choix < 1 || choix > nombreDesDepartements)
+    {
+        return -1;
+    }
+
+    
+    return choix - 1; // Pour obtenu l'indice
 }
 
 
@@ -379,7 +374,7 @@ void afficherLesEtudiants(Etudiant triEtudiants[], int croissante, int len){
     }
 }
 
-void triEtAfficherLesEtudiantsParNom(int croissante){
+void triEtAfficherLesEtudiantsParNom(int croissante){ // 1 si pour l'affichage croissante, 0 pour decroissante
     Etudiant cpy[MAX_ETUDIANTS];
     memcpy(cpy, etudiants, nombreDesEtudiants * sizeof(Etudiant));
 
@@ -400,7 +395,7 @@ void triEtAfficherLesEtudiantsParNom(int croissante){
     afficherLesEtudiants(cpy, croissante, nombreDesEtudiants);
 }
 
-void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){
+void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){ // 1 si pour l'affichage croissante, 0 pour decroissante
     Etudiant cpy[MAX_ETUDIANTS];
     memcpy(cpy, etudiants, nombreDesEtudiants * sizeof(Etudiant));
 
@@ -421,7 +416,7 @@ void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){
     afficherLesEtudiants(cpy, croissante, nombreDesEtudiants);
 }
 
-void triEtAfficherLesEtudiantsReussite(int croissante){
+void triEtAfficherLesEtudiantsReussite(int croissante){ // 1 si pour l'affichage croissante, 0 pour decroissante
 
     Etudiant cpy[MAX_ETUDIANTS];
 
@@ -504,7 +499,7 @@ void modifierUnEtudiant(){
 
     int indice = rechercheParId(id);
 
-    if (indice == -1)
+    if (indice == -1) // Si n'existe pas
     {
         puts("\nCette etudiant n'existe pas.");
         return;
@@ -597,6 +592,7 @@ void supprimerUnEtudiant(){
         return;
     }
     
+    // Confirmation de l'operation
     printf("\tVoulez-vous vraiment supprimer l'etudiant ? (oui/non): ");
     scanString(confirmation, sizeof(confirmation));
 
@@ -967,6 +963,7 @@ void printUnligne(){
     printf("\t+-----+----------------------+----------------------+---------------+--------------+----------------------+-------------------+\n");
 }
 
+// --------- Des Fonction Auxiliares ---------
 void obtenirLaMention(char mention[], int note){
     if (note < 10)
     {
@@ -1025,8 +1022,8 @@ void capitaliseUnString(char string[], int size){ // capitaliser un string, "iLy
 }
 
 
-// Seed les information
-void seed() {
+
+void seed() { // Seed les information
     Etudiant etudiant;
     Date dateDeNaissance;
 
@@ -1039,7 +1036,7 @@ void seed() {
     const int jours[] = {5, 6, 11, 2, 17, 21, 30, 12, 22};
     const int departements[] = {3, 3, 1, 4, 0, 2, 4, 1, 2};
 
-    // Seed les infromations
+    // Ajouter les infromations
     for (int i = 0; i < 9; ++i) {
         etudiant.id = id++;
         strcpy(etudiant.nom, noms[i]);
