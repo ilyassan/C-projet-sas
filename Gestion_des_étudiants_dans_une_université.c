@@ -44,6 +44,7 @@ void triEtAfficherLesEtudiantsReussite(int croissante);
 
 void afficherSousMenuDeManipulation();
 void modifierUnEtudiant();
+void supprimerUnEtudiant();
 int rechercheParId(int id);
 
 void printLesColonnes();
@@ -446,7 +447,7 @@ void afficherSousMenuDeManipulation(){
                 modifierUnEtudiant();
                 break;
             case 2:
-                // supprimerUnEtudiant();
+                supprimerUnEtudiant();
                 break;
             case 3:
                 return; // Retourne au menu principal
@@ -523,6 +524,44 @@ void modifierUnEtudiant(){
     etudiants[indice].departement = departement;
     
     puts("\nLes informations de l'etudiant sont modifie avec succes.");
+}
+
+void supprimerUnEtudiant(){
+    int id;
+    char confirmation[4];
+
+    puts("Supprimer Un Etudiant: \n");
+
+    printf("\tEntrer le ID d'etudiant: ");
+    scanf("%d", &id);
+    while (getchar() != '\n');  // Nettoyer le buffer
+
+    int indice = rechercheParId(id);
+
+    if (indice == -1)
+    {
+        puts("\nCette etudiant n'existe pas.");
+        return;
+    }
+    
+    printf("\tVoulez-vous vraiment supprimer l'etudiant ? (oui/non): ");
+    scanString(confirmation, sizeof(confirmation));
+
+    printf("\n");
+
+    if (strcmp(confirmation, "oui") != 0) {
+        puts("Suppression annulee.");
+        return;
+    }
+
+    for (int i = indice; i < nombreDesEtudiants - 1; i++)
+    {
+        etudiants[i] = etudiants[i + 1];
+    }
+
+    nombreDesEtudiants--;
+
+    puts("Etudiant supprime avec succes.");
 }
 
 int rechercheParId(int id){ // Retourner l'indice d'etudiant si trouver, si non retourner -1
