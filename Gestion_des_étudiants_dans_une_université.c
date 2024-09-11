@@ -28,7 +28,7 @@ Etudiant etudiants[100];
 int nombreDesEtudiants = 0;
 int id = 1;
 
-char departements[][20] = {"Science Math", "Science Physique", "Science SVT", "Science Economique", "Science Informatique"};
+char departements[][20] = {"Mathematiques", "Physique", "Chimie", "Economique", "Informatique"};
 
 // Définier les fonctions
 void afficherSousMenuDajout();
@@ -46,6 +46,11 @@ void afficherSousMenuDeManipulation();
 void modifierUnEtudiant();
 void supprimerUnEtudiant();
 int rechercheParId(int id);
+
+void afficherSousMenuDeRecherche();
+void afficherUnEtudiant();
+void afficherLesEtudiantsDansUnDepratement();
+
 
 void printLesColonnes();
 void printUnEtudiantLigne(Etudiant etudiant);
@@ -66,8 +71,8 @@ int main(){
         puts("\n#### Gestion des etudiants d'universite ####");
         puts("\n\t1. Ajouter Des Etudiants");
         puts("\t2. Afficher Les Etudiants");
-        puts("\t3. Manipulation D'un Tache");
-        puts("\t4. Rechercher Un Tache");
+        puts("\t3. Manipulation D'un Etudiant");
+        puts("\t4. Rechercher Un Etudiant");
         puts("\t5. Statistiques");
         puts("\t6. Quitter Le Program");
 
@@ -88,7 +93,7 @@ int main(){
             afficherSousMenuDeManipulation();
             continue;
         case 4:
-            // afficherSousMenuDeRecherche();
+            afficherSousMenuDeRecherche();
             continue;
         case 5:
             // afficherSousMenuDesStatistiques();
@@ -564,6 +569,140 @@ void supprimerUnEtudiant(){
     puts("Etudiant supprime avec succes.");
 }
 
+
+
+void afficherSousMenuDeRecherche(){
+    int choix;
+
+    while (1) {
+        
+        puts("\n\t1. Rechercher avec ID");
+        puts("\t2. Recherche dans un departement");
+        puts("\t3. Retour au menu principal");
+        
+        printf("\nEntrer votre choix: ");
+        scanf("%d", &choix);
+        while (getchar() != '\n');
+
+        switch (choix) {
+            case 1:
+                afficherUnEtudiant();
+                break;
+            case 2:
+                afficherLesEtudiantsDansUnDepratement();
+                break;
+            case 3:
+                return; // Retourne au menu principal
+            default:
+                puts("Choix invalid.");
+        }
+
+        // Retour au menu principal
+        choix = 0;
+        while (choix != 1) {
+            puts("\n----------------");
+            puts("1. Retour");
+            printf("Entrez votre choix: ");
+            scanf("%d", &choix);
+            while (getchar() != '\n');
+        }
+    }
+}
+
+void afficherUnEtudiant(){
+    int id;
+
+    puts("Afficher Un Etudiant: \n");
+
+    printf("\tEntrer le ID d'etudiant: ");
+    scanf("%d", &id);
+    while (getchar() != '\n');  // Nettoyer le buffer
+
+    int indice = rechercheParId(id);
+
+    if (indice == -1)
+    {
+        puts("\nCette etudiant n'existe pas.");
+        return;
+    }
+
+    printUnEtudiant(etudiants[indice]);
+}
+
+void afficherLesEtudiantsDansUnDepratement(){
+    
+    printf("\n");
+    int departement = obtenirDepartementIndice();
+    if (departement == -1)
+    {
+        puts("Choix Invalid.");
+        return;
+    }
+    
+    printf("\nLes Etudiants Dans La Departement ( %s ): \n\n", departements[departement]);
+
+    // Afficher les colonnes
+    printLesColonnes();
+
+
+    int count = 0;
+
+    // Afficher les lignes
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        if (etudiants[i].departement == departement) // Si la meme departement
+        {
+            printUnEtudiantLigne(etudiants[i]);
+            count++;
+        }
+
+    }
+
+    
+    if (count == 0)
+    {
+        printNexistePas();
+    }
+}
+
+
+
+void printLesColonnes(){
+    printUnligne();
+    printf("\t| %-3s | %-20s | %-20s | %-13s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Note Generale", "Departement", "Date De Naissance");
+    printUnligne();
+}
+void printUnEtudiantLigne(Etudiant etudiant){
+    printf("\t| %-3d | %-20s | %-20s | %8.2f      | %-20s |     %d/%02d/%4d     |\n",
+        etudiant.id, etudiant.nom, etudiant.prenom, etudiant.noteGenerale, departements[etudiant.departement],
+        etudiant.dateDeNaissance.jour, etudiant.dateDeNaissance.mois, etudiant.dateDeNaissance.annee 
+    );
+    printUnligne();
+}  
+void printUnEtudiant(Etudiant etudiant){
+    printf("\n");
+    printf("\tLe ID: %d\n", etudiant.id);
+    printf("\tLe Nom: %s\n", etudiant.nom);
+    printf("\tLe Prenom: %s\n", etudiant.prenom);
+    printf("\tLa Note Generale: %.2f\n", etudiant.noteGenerale);
+    printf("\tLa Departement: %s\n", departements[etudiant.departement]);
+
+    Date date = etudiant.dateDeNaissance;
+    printf("\tLa Date de naissance: %02d/%02d/%4d\n", date.jour, date.mois, date.annee);
+}
+void printNexistePas(){
+    printf("\t|                                  ");
+    printf("%-40s", "N'existe pas des etudiants pour afficher.");
+    printf("                                   |\n");
+    printUnligne();
+}
+void printUnligne(){
+    printf("\t+-----+----------------------+----------------------+---------------+----------------------+-------------------+\n");
+}
+
+
+
+
 int rechercheParId(int id){ // Retourner l'indice d'etudiant si trouver, si non retourner -1
 
     int g = 0;
@@ -587,44 +726,9 @@ int rechercheParId(int id){ // Retourner l'indice d'etudiant si trouver, si non 
     return -1;
 }
 
-
-
-void printLesColonnes(){
-    printUnligne();
-    printf("\t| %-3s | %-20s | %-20s | %-13s | %-20s | %-14s |\n", "ID", "Nom", "Prenom", "Note Generale", "Departement", "Date De Naissance");
-    printUnligne();
-}
-void printUnEtudiantLigne(Etudiant etudiant){
-    printf("\t| %-3d | %-20s | %-20s | %8.2f      | %-20s |     %d/%02d/%4d     |\n",
-        etudiant.id, etudiant.nom, etudiant.prenom, etudiant.noteGenerale, departements[etudiant.departement],
-        etudiant.dateDeNaissance.jour, etudiant.dateDeNaissance.mois, etudiant.dateDeNaissance.annee 
-    );
-    printUnligne();
-}  
-void printUnEtudiant(Etudiant etudiant){
-    printf("\tLe ID: %d\n", etudiant.id);
-    printf("\tLe Nom: %s\n", etudiant.nom);
-    printf("\tLe Prenom: %s\n", etudiant.prenom);
-    printf("\tLa Note Generale: %f\n", etudiant.noteGenerale);
-    printf("\tLa Departement: %s\n", departements[etudiant.departement]);
-
-    Date date = etudiant.dateDeNaissance;
-    printf("\tLa Date de naissance: %02d/%02d/%4d\n", date.jour, date.mois, date.annee);
-}
-void printNexistePas(){
-    printf("\t|                                  ");
-    printf("%-40s", "N'existe pas des etudiants pour afficher.");
-    printf("                                   |\n");
-    printUnligne();
-}
-void printUnligne(){
-    printf("\t+-----+----------------------+----------------------+---------------+----------------------+-------------------+\n");
-}
-
-
-
 void scanString(char string[], int size){
     if (fgets(string, size, stdin) != NULL) {
         string[strcspn(string, "\n")] = '\0';
     }
 }
+
