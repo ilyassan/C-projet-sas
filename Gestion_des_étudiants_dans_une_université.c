@@ -9,8 +9,9 @@
 
 
 // Définir les constants
-#define MAX_NOM 50
-#define MAX_PRENOM 50
+#define MAX_NOM 30
+#define MAX_PRENOM 30
+#define MAX_ETUDIANTS 100
 
 // Définir la structure de la date
 typedef struct {
@@ -22,15 +23,15 @@ typedef struct {
 // Définir la structure d'etudiante
 typedef struct {
     int id;
-    char nom[100];
-    char prenom[100];
+    char nom[MAX_NOM];
+    char prenom[MAX_PRENOM];
     Date dateDeNaissance;
     int departement;
     float noteGenerale;
 } Etudiant;
 
 // Définir les global variables
-Etudiant etudiants[100];
+Etudiant etudiants[MAX_ETUDIANTS];
 int nombreDesEtudiants = 0;
 int id = 1;
 
@@ -377,7 +378,7 @@ void afficherLesEtudiants(Etudiant triEtudiants[], int croissante, int len){
 }
 
 void triEtAfficherLesEtudiantsParNom(int croissante){
-    Etudiant cpy[100];
+    Etudiant cpy[MAX_ETUDIANTS];
     memcpy(cpy, etudiants, nombreDesEtudiants * sizeof(Etudiant));
 
     // Tri á bulles
@@ -398,7 +399,7 @@ void triEtAfficherLesEtudiantsParNom(int croissante){
 }
 
 void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){
-    Etudiant cpy[100];
+    Etudiant cpy[MAX_ETUDIANTS];
     memcpy(cpy, etudiants, nombreDesEtudiants * sizeof(Etudiant));
 
     // Tri á bulles
@@ -420,7 +421,7 @@ void triEtAfficherLesEtudiantsParNoteGenerale(int croissante){
 
 void triEtAfficherLesEtudiantsReussite(int croissante){
 
-    Etudiant cpy[100];
+    Etudiant cpy[MAX_ETUDIANTS];
 
     int count = 0;
 
