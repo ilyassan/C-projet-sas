@@ -55,6 +55,7 @@ void afficherLesEtudiantsDansUnDepratement();
 
 void afficherSousMenuDesStatistiques();
 void afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil();
+void afficherLesTroisMeilleurEtudiants();
 
 
 void printLesColonnes();
@@ -678,7 +679,7 @@ void afficherSousMenuDesStatistiques(){
         puts("\n\t1. Le nombre total des etudiants inscrits");
         puts("\t2. Le nombre des etudiants dans chaque departement");
         puts("\t3. Le nombre des etudiants ayant une note superieure a une seuil");
-        puts("\t4. Le 3 meilleure etudiants");
+        puts("\t4. Le trois meilleure etudiants");
         puts("\t5. Le nombre des etudiants reussir dans chaque departement");
         puts("\t6. Retour au menu principal");
         
@@ -710,6 +711,9 @@ void afficherSousMenuDesStatistiques(){
                 break;
             case 3:
                 afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil();
+                break;
+            case 4:
+                afficherLesTroisMeilleurEtudiants();
                 break;
             case 6:
                 return; // Retourne au menu principal
@@ -754,9 +758,44 @@ void afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil(){
         
     }
     
-    printf("Le Nombre des etudiants ayant un note superieure a %.2f est: %d", seuil, count);
+    printf("\tLe Nombre des etudiants ayant un note superieure a %.2f est: %d\n", seuil, count);
 }
 
+void afficherLesTroisMeilleurEtudiants(){
+
+    printf("\n");
+    if (nombreDesEtudiants < 3)
+    {
+        puts("Le nombre des etudiantes est inferieure a 3.");
+        return;
+    }
+    puts("Les meilleurs trois etudiants: ");
+    
+
+    Etudiant etudiant1, etudiant2, etudiant3;
+
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        if (etudiants[i].noteGenerale > etudiant1.noteGenerale) {
+            Etudiant temp1 = etudiant1;
+            Etudiant temp2 = etudiant2;
+            etudiant1 = etudiants[i];
+            etudiant2 = temp1;
+            etudiant3 = temp2;
+        } else if (etudiants[i].noteGenerale > etudiant2.noteGenerale) {
+            Etudiant temp2 = etudiant2;
+            etudiant2 = etudiants[i];
+            etudiant3 = temp2;
+        } else if (etudiants[i].noteGenerale > etudiant3.noteGenerale) {
+            etudiant3 = etudiants[i];
+        }
+    }
+
+    printLesColonnes();
+    printUnEtudiantLigne(etudiant1);
+    printUnEtudiantLigne(etudiant2);
+    printUnEtudiantLigne(etudiant3);
+}
 
 
 void printLesColonnes(){
