@@ -29,6 +29,7 @@ int nombreDesEtudiants = 0;
 int id = 1;
 
 char departements[][20] = {"Mathematiques", "Physique", "Chimie", "Economique", "Informatique"};
+int nombreDesDepartements = sizeof(departements) / sizeof(departements[0]);
 
 // Définier les fonctions
 void afficherSousMenuDajout();
@@ -50,6 +51,10 @@ int rechercheParId(int id);
 void afficherSousMenuDeRecherche();
 void afficherUnEtudiant();
 void afficherLesEtudiantsDansUnDepratement();
+
+
+void afficherSousMenuDesStatistiques();
+void afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil();
 
 
 void printLesColonnes();
@@ -96,14 +101,14 @@ int main(){
             afficherSousMenuDeRecherche();
             continue;
         case 5:
-            // afficherSousMenuDesStatistiques();
+            afficherSousMenuDesStatistiques();
             continue;
         case 6:
             travail = 0;
             break;
         
         default:
-            puts("Choix invalid.");
+            puts("Choix invalide.");
         }
 
         // Pour retour au menu principal
@@ -145,7 +150,7 @@ void afficherSousMenuDajout(){
             case 3:
                 return; // Retourne au menu principal
             default:
-                puts("Choix invalid.");
+                puts("Choix invalide.");
         }
 
         // Retour au menu principal
@@ -235,12 +240,10 @@ void ajouteDesEtudiants(int n){ // n Est le nombre des etudiants qui l'utilisate
 }
 
 int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister, si non retourner -1
-
-    int len = sizeof(departements) / sizeof(departements[0]);
     int choix;
 
     // Afficher les departements
-    for (int i = 0; i < len; i++)
+    for (int i = 0; i < nombreDesDepartements; i++)
     {
         printf("\t%d. %s\n", i + 1, departements[i]);
     }
@@ -250,7 +253,7 @@ int obtenirDepartementIndice(){ // Retourner l'indice de departement si exister,
     while (getchar() != '\n'); // Nettoyer le buffer
 
     // Validatiton de choix
-    if (choix < 1 || choix > len)
+    if (choix < 1 || choix > nombreDesDepartements)
     {
         return -1;
     }
@@ -324,7 +327,7 @@ void afficherSousMenuDeAffichageDesEtudiantes(){
             case 7:
                 return; // Retourne au menu principal
             default:
-                puts("Choix invalid.");
+                puts("Choix invalide.");
         }
 
         // Retour au menu principal
@@ -457,7 +460,7 @@ void afficherSousMenuDeManipulation(){
             case 3:
                 return; // Retourne au menu principal
             default:
-                puts("Choix invalid.");
+                puts("Choix invalide.");
         }
 
         // Retour au menu principal
@@ -517,7 +520,7 @@ void modifierUnEtudiant(){
     printf("\n");
     departement = obtenirDepartementIndice();
     if (departement == -1){
-        puts("Choix Invalid.");
+        puts("Choix Invalide.");
         return;
     }
 
@@ -570,7 +573,7 @@ void supprimerUnEtudiant(){
 }
 
 
-
+// --------- Les Fonction De Recherche ---------
 void afficherSousMenuDeRecherche(){
     int choix;
 
@@ -594,7 +597,7 @@ void afficherSousMenuDeRecherche(){
             case 3:
                 return; // Retourne au menu principal
             default:
-                puts("Choix invalid.");
+                puts("Choix invalide.");
         }
 
         // Retour au menu principal
@@ -635,7 +638,7 @@ void afficherLesEtudiantsDansUnDepratement(){
     int departement = obtenirDepartementIndice();
     if (departement == -1)
     {
-        puts("Choix Invalid.");
+        puts("Choix Invalide.");
         return;
     }
     
@@ -663,6 +666,95 @@ void afficherLesEtudiantsDansUnDepratement(){
     {
         printNexistePas();
     }
+}
+
+
+// --------- Les Fonction De Statistiques ---------
+void afficherSousMenuDesStatistiques(){
+    int choix;
+
+    while (1) {
+        
+        puts("\n\t1. Le nombre total des etudiants inscrits");
+        puts("\t2. Le nombre des etudiants dans chaque departement");
+        puts("\t3. Le nombre des etudiants ayant une note superieure a une seuil");
+        puts("\t4. Le 3 meilleure etudiants");
+        puts("\t5. Le nombre des etudiants reussir dans chaque departement");
+        puts("\t6. Retour au menu principal");
+        
+        printf("\nEntrer votre choix: ");
+        scanf("%d", &choix);
+        while (getchar() != '\n');
+
+        switch (choix) {
+            case 1:
+                printf("\nLe nombre total des etudiants inscrits: %d\n", nombreDesEtudiants);
+                break;
+            case 2:
+                puts("\nLe nombre des etudiants dans chaque departement:\n");
+
+                for (int i = 0; i < nombreDesDepartements; i++)
+                {
+                    int count = 0;
+                    for (int j = 0; j < nombreDesEtudiants; j++)
+                    {
+                        if (etudiants[j].departement == i)
+                        {
+                            count++;
+                        }
+                    }
+
+                    printf("\t%d. %-15s => %d\n", i + 1, departements[i], count);
+                }
+                
+                break;
+            case 3:
+                afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil();
+                break;
+            case 6:
+                return; // Retourne au menu principal
+            default:
+                puts("Choix invalide.");
+        }
+
+        // Retour au menu principal
+        choix = 0;
+        while (choix != 1) {
+            puts("\n----------------");
+            puts("1. Retour");
+            printf("Entrez votre choix: ");
+            scanf("%d", &choix);
+            while (getchar() != '\n');
+        }
+    }
+}
+
+void afficherLeNombreDesEtudiantsAyantUnNoteSuperieureAseuil(){
+    float seuil;
+    printf("\n\tEntrer le seuil: ");
+    scanf("%f", &seuil);
+    while (getchar() != '\n');
+
+    printf("\n");
+
+    int count = 0;
+
+    if (seuil < 0 || seuil > 20)
+    {
+        puts("Invalide seuil.");
+        return;
+    }
+
+    for (int i = 0; i < nombreDesEtudiants; i++)
+    {
+        if (etudiants[i].noteGenerale >= seuil)
+        {
+            count++;
+        }
+        
+    }
+    
+    printf("Le Nombre des etudiants ayant un note superieure a %.2f est: %d", seuil, count);
 }
 
 
